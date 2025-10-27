@@ -74,17 +74,24 @@ public class RecursiveFileSearch {
      *             args[2] (optional) = "case-sensitive" or "case-insensitive" (default insensitive)
      */
     public static void main(String[] args) {
-        if (args.length < 2) {
-            System.out.println("Usage: java RecursiveFileSearch <directory_path> <file1,file2,...> [case-sensitive|case-insensitive]");
-            return;
-        }
-
-        String dirPath = args[0];
-        String[] filesArray = args[1].split(",");
+        // Set up default test directory if no arguments are provided
+        String dirPath;
         List<String> fileNames = new ArrayList<>();
-        for (String f : filesArray) fileNames.add(f.trim());
+        boolean caseSensitive = false;
 
-        boolean caseSensitive = args.length >= 3 && args[2].equalsIgnoreCase("case-sensitive");
+        if (args.length < 2) {
+            // Default test scenario
+            dirPath = "testDir"; // your test directory
+            fileNames.add("rootFile.txt");        // file in root
+            fileNames.add("subFile.txt");         // file in subdirectory
+            fileNames.add("nonExistentFile.txt"); // file that doesn't exist
+            caseSensitive = false; // default
+        } else {
+            dirPath = args[0];
+            String[] filesArray = args[1].split(",");
+            for (String f : filesArray) fileNames.add(f.trim());
+            caseSensitive = args.length >= 3 && args[2].equalsIgnoreCase("case-sensitive");
+        }
 
         File directory = new File(dirPath);
         if (!directory.exists() || !directory.isDirectory()) {
@@ -92,6 +99,9 @@ public class RecursiveFileSearch {
             return;
         }
 
+        System.out.println("Searching in directory: " + directory.getAbsolutePath());
+        System.out.println("Case-sensitive search: " + caseSensitive);
         searchMultipleFiles(directory, fileNames, caseSensitive);
     }
+
 }
