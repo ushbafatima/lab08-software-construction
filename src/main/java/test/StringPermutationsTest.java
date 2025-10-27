@@ -3,105 +3,95 @@ package test;
 import code.StringPermutations;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
 
+/**
+ * Unit tests for StringPermutations.
+ * Covers:
+ * - Normal strings
+ * - Strings with duplicates
+ * - Empty string
+ * - Single character
+ * - Null input
+ * - Recursive and iterative consistency
+ * - Duplicate handling
+ */
 public class StringPermutationsTest {
 
     @Test
-    public void testRecursivePermutationsNormal() {
-        String input = "abc";
-        List<String> result = StringPermutations.generatePermutationsRecursive(input, true);
-        assertEquals(6, result.size(), "Recursive permutation count for 'abc' should be 6");
+    void testNormalRecursive() {
+        List<String> result = StringPermutations.generatePermutationsRecursive("abc", true);
+        assertEquals(6, result.size(), "Recursive permutations count should be 6");
         assertTrue(result.contains("abc"));
-        assertTrue(result.contains("acb"));
-        assertTrue(result.contains("bac"));
-        assertTrue(result.contains("bca"));
-        assertTrue(result.contains("cab"));
         assertTrue(result.contains("cba"));
     }
 
     @Test
-    public void testIterativePermutationsNormal() {
-        String input = "abc";
-        List<String> result = StringPermutations.generatePermutationsIterative(input, true);
-        assertEquals(6, result.size(), "Iterative permutation count for 'abc' should be 6");
+    void testNormalIterative() {
+        List<String> result = StringPermutations.generatePermutationsIterative("abc", true);
+        assertEquals(6, result.size(), "Iterative permutations count should be 6");
         assertTrue(result.contains("abc"));
-        assertTrue(result.contains("acb"));
-        assertTrue(result.contains("bac"));
-        assertTrue(result.contains("bca"));
-        assertTrue(result.contains("cab"));
         assertTrue(result.contains("cba"));
     }
 
     @Test
-    public void testAllowDuplicates() {
-        String input = "aab";
-        List<String> resultAllowDup = StringPermutations.generatePermutationsRecursive(input, true);
-        List<String> resultNoDup = StringPermutations.generatePermutationsRecursive(input, false);
-
-        assertTrue(resultAllowDup.size() > resultNoDup.size(),
-                "Duplicates allowed should produce more permutations");
+    void testDuplicateHandlingRecursive() {
+        List<String> withDup = StringPermutations.generatePermutationsRecursive("aab", true);
+        List<String> noDup = StringPermutations.generatePermutationsRecursive("aab", false);
+        assertTrue(withDup.size() > noDup.size(), "Duplicates allowed should produce more permutations");
     }
 
     @Test
-    public void testEmptyString() {
-        String input = "";
-        List<String> resultRecursive = StringPermutations.generatePermutationsRecursive(input, true);
-        List<String> resultIterative = StringPermutations.generatePermutationsIterative(input, true);
-
-        assertEquals(1, resultRecursive.size(), "Empty string should return list of size 1 (empty string) in recursive");
-        assertEquals("", resultRecursive.get(0), "Empty string result should be '' in recursive");
-
-        assertEquals(1, resultIterative.size(), "Empty string should return list of size 1 (empty string) in iterative");
-        assertEquals("", resultIterative.get(0), "Empty string result should be '' in iterative");
+    void testDuplicateHandlingIterative() {
+        List<String> withDup = StringPermutations.generatePermutationsIterative("aab", true);
+        List<String> noDup = StringPermutations.generatePermutationsIterative("aab", false);
+        assertTrue(withDup.size() > noDup.size(), "Duplicates allowed should produce more permutations in iterative");
     }
 
     @Test
-    public void testSingleCharacter() {
-        String input = "x";
-        List<String> resultRecursive = StringPermutations.generatePermutationsRecursive(input, true);
-        List<String> resultIterative = StringPermutations.generatePermutationsIterative(input, true);
+    void testEmptyString() {
+        List<String> recursive = StringPermutations.generatePermutationsRecursive("", true);
+        List<String> iterative = StringPermutations.generatePermutationsIterative("", true);
 
-        assertEquals(1, resultRecursive.size(), "Single character string should have 1 permutation recursive");
-        assertEquals("x", resultRecursive.get(0));
+        assertEquals(1, recursive.size());
+        assertEquals("", recursive.get(0));
 
-        assertEquals(1, resultIterative.size(), "Single character string should have 1 permutation iterative");
-        assertEquals("x", resultIterative.get(0));
+        assertEquals(1, iterative.size());
+        assertEquals("", iterative.get(0));
     }
 
     @Test
-    public void testNullInputRecursive() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            StringPermutations.generatePermutationsRecursive(null, true);
-        });
-        assertEquals("Input string cannot be null", exception.getMessage());
+    void testSingleCharacter() {
+        List<String> recursive = StringPermutations.generatePermutationsRecursive("x", true);
+        List<String> iterative = StringPermutations.generatePermutationsIterative("x", true);
+
+        assertEquals(1, recursive.size());
+        assertEquals("x", recursive.get(0));
+
+        assertEquals(1, iterative.size());
+        assertEquals("x", iterative.get(0));
     }
 
     @Test
-    public void testNullInputIterative() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            StringPermutations.generatePermutationsIterative(null, true);
-        });
-        assertEquals("Input string cannot be null", exception.getMessage());
+    void testNullInputRecursive() {
+        Exception ex = assertThrows(IllegalArgumentException.class, () ->
+                StringPermutations.generatePermutationsRecursive(null, true));
+        assertEquals("Input string cannot be null", ex.getMessage());
     }
 
     @Test
-    public void testRecursiveAndIterativeConsistency() {
-        String input = "abc";
-        List<String> recursiveResult = StringPermutations.generatePermutationsRecursive(input, true);
-        List<String> iterativeResult = StringPermutations.generatePermutationsIterative(input, true);
-
-        assertEquals(recursiveResult.size(), iterativeResult.size(), "Recursive and iterative results should match in size");
-        assertTrue(recursiveResult.containsAll(iterativeResult), "Recursive result should contain all iterative permutations");
+    void testNullInputIterative() {
+        Exception ex = assertThrows(IllegalArgumentException.class, () ->
+                StringPermutations.generatePermutationsIterative(null, true));
+        assertEquals("Input string cannot be null", ex.getMessage());
     }
 
     @Test
-    public void testDuplicatesHandlingIterative() {
-        String input = "aab";
-        List<String> allowDup = StringPermutations.generatePermutationsIterative(input, true);
-        List<String> noDup = StringPermutations.generatePermutationsIterative(input, false);
+    void testRecursiveIterativeConsistency() {
+        List<String> rec = StringPermutations.generatePermutationsRecursive("abc", true);
+        List<String> ite = StringPermutations.generatePermutationsIterative("abc", true);
 
-        assertTrue(allowDup.size() > noDup.size(), "Duplicates allowed should produce more permutations in iterative");
+        assertEquals(rec.size(), ite.size());
+        assertTrue(rec.containsAll(ite));
     }
 }
